@@ -1,0 +1,51 @@
+{
+	"kimchiPeople": [
+		{
+      "id": 1,
+      "name": "Hell",
+      "address": "김치마을"
+    },
+		{
+      "id": 2,
+      "name": "Hell",
+      "address": "김치마을"
+    },
+		{
+      "id": 3,
+      "name": "Hell",
+      "address": "김치마을"
+    },
+		{
+      "id": 4,
+      "name": "Hell",
+      "address": "김치마을"
+    },
+		{
+      "id": 5,
+      "name": "Hell",
+      "address": "김치마을"
+    }
+	],
+  "musician": [
+    {
+      "name": "포말13",
+      "songs": 100,
+      "musicianId": 1
+    },
+    {
+      "name": "포말1",
+      "songs": 100,
+      "musicianId": 2
+    },
+    {
+      "name": "포말2",
+      "songs": 100,
+      "musicianId": 3
+    },
+    {
+      "name": "포말aa",
+      "songs": 100,
+      "musicianId": 4
+    }
+  ]
+}
