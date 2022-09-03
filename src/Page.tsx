@@ -4,40 +4,22 @@ import useDropdownBuilder from "./hooks/useDropdownBuilder";
 import { useGetKimchies, useGetMusicians } from "./api";
 
 const Page = () => {
-	const { createId, createName, createValue } = useDropdownBuilder();
+	const { createDropdownlist } = useDropdownBuilder();
 	const { data: kimchiPeopleList } = useGetKimchies();
 	const { data: musicianList } = useGetMusicians();
 
 	const kimchiList = useMemo(
 		() =>
 			kimchiPeopleList?.map((kimchi) => {
-				return {
-					...createId(kimchi, "id"),
-					...createName(kimchi, "name"),
-					...createValue(kimchi, "value"),
-				} as DropdownItemProps;
+				return createDropdownlist(kimchi)
+					.createId("id")
+					.createName("name")
+					.build();
 			}) ?? [],
-		[createId, createName, createValue, kimchiPeopleList]
+		[kimchiPeopleList]
 	);
 
-	const musicianDroplist = useMemo(
-		() =>
-			musicianList?.map((musician) => {
-				return {
-					...createId(musician, "musicianId"),
-					...createName(musician, "name"),
-					...createValue(musician, "value"),
-				} as DropdownItemProps;
-			}) ?? [],
-		[createId, createName, createValue, kimchiPeopleList]
-	);
-
-	return (
-		<div>
-			<Dropdown list={kimchiList} unqiue='kimchi' />
-			<Dropdown list={musicianDroplist} unqiue='music' />
-		</div>
-	);
+	return <Dropdown list={kimchiList} unqiue='kimchi' />;
 };
 
 export default Page;

@@ -1,4 +1,4 @@
-import { ChangeEvent, memo, useRef, useState } from "react";
+import { ChangeEvent, memo, useEffect, useRef, useState } from "react";
 import useOutside from "../hooks/useOutside";
 import Checkbox from "./Checkbox";
 import {
@@ -31,7 +31,7 @@ const Dropdown = ({ list, onChangeCb, unqiue }: Props) => {
 
 	const handleSelect = (e: ChangeEvent<HTMLInputElement>) => {
 		const { value } = e.target;
-		console.log({ value });
+
 		const found = list.find((list) => {
 			return String(list.id) === value;
 		});
@@ -44,6 +44,10 @@ const Dropdown = ({ list, onChangeCb, unqiue }: Props) => {
 	};
 
 	useOutside(dropdownRef, () => setIsOpen(false));
+
+	useEffect(() => {
+		setSelectedValue(list[0]);
+	}, [list]);
 
 	return (
 		<DropdownWrapper ref={dropdownRef}>
