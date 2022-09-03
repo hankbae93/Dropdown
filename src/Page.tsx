@@ -1,17 +1,16 @@
-import React, { useMemo } from "react";
-import Dropdown, { DropdownItemProps } from "./components/Dropdown";
+import { useMemo } from "react";
+import Dropdown from "./components/Dropdown";
 import useDropdownBuilder from "./hooks/useDropdownBuilder";
-import { useGetKimchies, useGetMusicians } from "./api";
+import { useGetKimchies } from "./api";
 
 const Page = () => {
-	const { createDropdownlist } = useDropdownBuilder();
+	const { DropdownPropsBuilder } = useDropdownBuilder();
 	const { data: kimchiPeopleList } = useGetKimchies();
-	const { data: musicianList } = useGetMusicians();
 
 	const kimchiList = useMemo(
 		() =>
 			kimchiPeopleList?.map((kimchi) => {
-				return createDropdownlist(kimchi)
+				return DropdownPropsBuilder(kimchi)
 					.createId("id")
 					.createName("name")
 					.build();

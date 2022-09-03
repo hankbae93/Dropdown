@@ -1,6 +1,6 @@
 interface DropProps<T> {
-	id: any;
-	name: any;
+	id: string | number;
+	name: string;
 	value: T;
 }
 interface DropItemPropsCreator<T extends Record<string, any>> {
@@ -15,10 +15,10 @@ const useDropdownBuilder = () => {
 	 * @param name `Dropdown` 컴포넌트의 아이템 텍스트가 될 인자
 	 * @return DropProps `build`를 하면 `DropProps`타입 객체로 재구성한 배열 리턴
 	 */
-	const createDropdownlist = <T extends Record<string, any>>(obj: T) => {
+	const DropdownPropsBuilder = <T extends Record<string, any>>(obj: T) => {
 		const props: DropProps<T> = {
-			id: null,
-			name: null,
+			id: "",
+			name: "",
 			value: obj,
 		};
 
@@ -36,7 +36,7 @@ const useDropdownBuilder = () => {
 		return propsCreator;
 	};
 
-	return { createDropdownlist };
+	return { DropdownPropsBuilder };
 };
 
 export default useDropdownBuilder;
