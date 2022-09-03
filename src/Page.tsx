@@ -1,23 +1,16 @@
-import axios, { AxiosResponse } from "axios";
 import React, { useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
 import Dropdown, { DropdownItemProps } from "./components/Dropdown";
 import useDropdownBuilder from "./hooks/useDropdownBuilder";
-import { useGetKimchies } from "./api";
+import { useGetKimchies, useGetMusicians } from "./api";
 
 const Page = () => {
 	const { createId, createName, createValue } = useDropdownBuilder();
 	const { data: kimchiPeopleList } = useGetKimchies();
-	const { data: musicianList } = useQuery(["musician"], () =>
-		axios.get("http://localhost:3001/musician")
-	);
-
-	console.log(kimchiPeopleList);
+	const { data: musicianList } = useGetMusicians();
 
 	const kimchiList = useMemo(
 		() =>
 			kimchiPeopleList?.map((kimchi) => {
-				console.log(createId(kimchi, "id"));
 				return {
 					...createId(kimchi, "id"),
 					...createName(kimchi, "name"),
@@ -27,11 +20,22 @@ const Page = () => {
 		[createId, createName, createValue, kimchiPeopleList]
 	);
 
-	console.log({ kimchiList });
+	const musicianDroplist = useMemo(
+		() =>
+			musicianList?.map((musician) => {
+				return {
+					...createId(musician, "musicianId"),
+					...createName(musician, "name"),
+					...createValue(musician, "value"),
+				} as DropdownItemProps;
+			}) ?? [],
+		[createId, createName, createValue, kimchiPeopleList]
+	);
 
 	return (
 		<div>
-			<Dropdown list={kimchiList} />
+			<Dropdown list={kimchiList} unqiue='kimchi' />
+			<Dropdown list={musicianDroplist} unqiue='music' />
 		</div>
 	);
 };

@@ -13,14 +13,14 @@ export const DropdownButton = styled.button`
 `;
 
 export const DropdownList = styled.ul<{ isOpen: boolean }>`
-	${({ isOpen }) => isOpen && `display:none;`}
+	${({ isOpen }) => !isOpen && `display:none;`}
 	position: absolute;
 	left: 0;
-	bottom: -44px;
+	top: 50px;
 	width: 100%;
-	background-color: #2b2b2b2b;
 	padding: 0;
 	margin: 0;
+	background-color: #2b2b2b2b;
 `;
 
 export const DropdownListItem = styled.li`

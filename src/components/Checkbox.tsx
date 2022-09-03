@@ -21,9 +21,9 @@ const Checkbox = ({
 	return (
 		<CheckboxWrapper onClick={(e) => e.stopPropagation()}>
 			<label htmlFor={id}>
-				{value}
+				{name}
 				<input
-					type='checkbox'
+					type='radio'
 					id={id}
 					name={name}
 					value={value}

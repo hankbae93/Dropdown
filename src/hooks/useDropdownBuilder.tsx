@@ -1,5 +1,3 @@
-import React from "react";
-
 type BuilderFunction = <T extends Record<string, any>>(
 	obj: T,
 	key: keyof T | "value"
@@ -15,7 +13,7 @@ const useDropdownBuilder = () => {
 	};
 
 	const createValue: BuilderFunction = (obj, key) => {
-		return { value: obj[key] };
+		return { value: obj };
 	};
 
 	return { createId, createName, createValue };

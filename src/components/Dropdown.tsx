@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { ChangeEvent, memo, useRef, useState } from "react";
+import useOutside from "../hooks/useOutside";
 import Checkbox from "./Checkbox";
 import {
 	DropdownButton,
@@ -15,29 +16,54 @@ export interface DropdownItemProps {
 
 interface Props {
 	list: DropdownItemProps[];
+	onChangeCb?: (found: DropdownItemProps) => DropdownItemProps["value"];
+	unqiue: string;
 }
 
-const Dropdown = ({ list }: Props) => {
-	const [isOpen, setIsOpen] = useState(false);
-	const [selectedValue, setSelectedValue] = useState<DropdownItemProps>();
+const Dropdown = ({ list, onChangeCb, unqiue }: Props) => {
+	const dropdownRef = useRef<HTMLDivElement>(null);
+	const [isOpen, setIsOpen] = useState(true);
+	const [selectedValue, setSelectedValue] = useState<
+		DropdownItemProps | undefined
+	>(list[0]);
+
+	const handleListOpen = () => setIsOpen((prev) => !prev);
+
+	const handleSelect = (e: ChangeEvent<HTMLInputElement>) => {
+		const { value } = e.target;
+		console.log({ value });
+		const found = list.find((list) => {
+			return String(list.id) === value;
+		});
+
+		setSelectedValue(found as DropdownItemProps);
+		setIsOpen(false);
+		if (onChangeCb && found) {
+			onChangeCb(found);
+		}
+	};
+
+	useOutside(dropdownRef, () => setIsOpen(false));
 
 	return (
-		<DropdownWrapper>
-			<DropdownButton onClick={() => setIsOpen((prev) => !prev)}>
-				메뉴
+		<DropdownWrapper ref={dropdownRef}>
+			<DropdownButton onClick={handleListOpen}>
+				{selectedValue?.name}
 			</DropdownButton>
 
 			<DropdownList isOpen={isOpen}>
-				{list.map((data) => {
+				{list.map(({ id, name }) => {
 					return (
-						<DropdownListItem key={data.id}>
+						<DropdownListItem key={id}>
 							<Checkbox
-								id={data.id}
-								value={data.name}
+								id={unqiue + id}
+								value={id}
+								name={name}
 								prefix={""}
 								icon={""}
 								label={""}
-								onChange={() => data.id === selectedValue?.id}
+								onChange={handleSelect}
+								checked={selectedValue?.id === id}
 							/>
 						</DropdownListItem>
 					);
