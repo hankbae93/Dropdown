@@ -4,7 +4,7 @@
 
 2. 가공한 데이터지만 여전히 원본이 유지되어있고 싶음
 
-3. 가공하는 과정이 매번 새로운 배열에 직접 쓰는 방식이 아닌 `명시적`이었으면 좋겠음
+3. 가공하는 과정이 매번 새로운 배열에 매번 리터럴로 객체를 직접 쓰는 방식이 아닌 `명시적`이었으면 좋겠음
 
 # Dropdown의 형태
 
@@ -143,30 +143,48 @@ builder 패턴 + 제네릭 추가
 
 - 사용자가 인풋을 입력할 때 데이터의 `key`타입으로 자동완성되게 작업
 
+## before
+
 ```ts
-const Page = () => {
-	const { createDropdownlist } = useDropdownBuilder();
-	const { data: kimchiPeopleList } = useGetKimchies();
+const { data: kimchiPeopleList } = useGetKimchies();
 
-	const kimchiList = useMemo(
-		() =>
-			kimchiPeopleList?.map((kimchi) => {
-				return createDropdownlist(kimchi)
-					.createId("id")
-					.createName("name")
-					.build();
-			}) ?? [],
-		[kimchiPeopleList]
-	);
-
-	return <Dropdown list={kimchiList} unqiue='kimchi' />;
-};
+const kimchiList = useMemo(
+	() =>
+		kimchiPeopleList?.map((kimchi) => {
+			return {
+				id: kimchi.id,
+				name: kimchi.address,
+				value: kimchi,
+			};
+		}) ?? [],
+	[kimchiPeopleList]
+);
 ```
+
+## 패턴 적용 후
+
+```ts
+const { DropdownPropsBuilder } = useDropdownBuilder();
+const { data: kimchiPeopleList } = useGetKimchies();
+
+const kimchiList = useMemo(
+	() =>
+		kimchiPeopleList?.map((kimchi) => {
+			return DropdownPropsBuilder(kimchi)
+				.createId("id")
+				.createName("name")
+				.build();
+		}) ?? [],
+	[kimchiPeopleList]
+);
+```
+
+## after
 
 ```ts
 interface DropProps<T> {
-	id: any;
-	name: any;
+	id: string | number;
+	name: string;
 	value: T;
 }
 
@@ -178,14 +196,15 @@ interface DropItemPropsCreator<T extends Record<string, any>> {
 
 const useDropdownBuilder = () => {
 	/**
-	 * @param id `Dropdown` 컴포넌트의 아이템 선택기준이 될 인자
-	 * @param name `Dropdown` 컴포넌트의 아이템 텍스트가 될 인자
-	 * @return DropProps `build`를 하면 `DropProps`타입 객체로 재구성한 배열 리턴
+	 * @function createId `Dropdown` 컴포넌트의 아이템 선택기준이 될 인자
+	 * @function createName `Dropdown` 컴포넌트의 아이템 텍스트가 될 인자
+	 * @function build `Dropdown` 컴포넌트의 아이템 텍스트가 될 인자
+	 * @return `DropProps` `build`를 하면 `DropProps`타입 객체로 재구성한 객체 리턴
 	 */
-	const createDropdownlist = <T extends Record<string, any>>(obj: T) => {
+	const DropdownPropsBuilder = <T extends Record<string, any>>(obj: T) => {
 		const props: DropProps<T> = {
-			id: null,
-			name: null,
+			id: "",
+			name: "",
 			value: obj,
 		};
 
@@ -198,12 +217,16 @@ const useDropdownBuilder = () => {
 				props.name = obj[key];
 				return this;
 			},
-			build: () => props,
+			build: function () {
+				if (!props.id || !props.name)
+					throw new Error("id 또는 name이 존재하지 않습니다.");
+				return props;
+			},
 		};
 		return propsCreator;
 	};
 
-	return { createDropdownlist };
+	return { DropdownPropsBuilder };
 };
 
 export default useDropdownBuilder;

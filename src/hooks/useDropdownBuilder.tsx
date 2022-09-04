@@ -3,6 +3,7 @@ interface DropProps<T> {
 	name: string;
 	value: T;
 }
+
 interface DropItemPropsCreator<T extends Record<string, any>> {
 	createId: (key: keyof T) => this;
 	createName: (key: keyof T) => this;
