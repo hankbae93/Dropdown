@@ -9,8 +9,8 @@ import {
 } from "./Dropdown.style";
 
 export interface DropdownItemProps {
-	id: any;
-	name: any;
+	id: string | number;
+	name: string;
 	value: any;
 }
 

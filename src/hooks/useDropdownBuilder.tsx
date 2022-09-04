@@ -11,9 +11,10 @@ interface DropItemPropsCreator<T extends Record<string, any>> {
 
 const useDropdownBuilder = () => {
 	/**
-	 * @param id `Dropdown` 컴포넌트의 아이템 선택기준이 될 인자
-	 * @param name `Dropdown` 컴포넌트의 아이템 텍스트가 될 인자
-	 * @return DropProps `build`를 하면 `DropProps`타입 객체로 재구성한 배열 리턴
+	 * @function createId `Dropdown` 컴포넌트의 아이템 선택기준이 될 인자
+	 * @function createName `Dropdown` 컴포넌트의 아이템 텍스트가 될 인자
+	 * @function build `Dropdown` 컴포넌트의 아이템 텍스트가 될 인자
+	 * @return `DropProps` `build`를 하면 `DropProps`타입 객체로 재구성한 객체 리턴
 	 */
 	const DropdownPropsBuilder = <T extends Record<string, any>>(obj: T) => {
 		const props: DropProps<T> = {
@@ -31,7 +32,11 @@ const useDropdownBuilder = () => {
 				props.name = obj[key];
 				return this;
 			},
-			build: () => props,
+			build: function () {
+				if (!props.id || !props.name)
+					throw new Error("id 또는 name이 존재하지 않습니다.");
+				return props;
+			},
 		};
 		return propsCreator;
 	};
