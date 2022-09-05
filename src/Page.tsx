@@ -1,21 +1,15 @@
 import { useMemo } from "react";
 import Dropdown from "./components/Dropdown";
-import useDropdownBuilder from "./hooks/useDropdownBuilder";
 import { useGetKimchies } from "./api";
+import convertToDropdownList from "./utils/convertToDropdownData";
 
 const Page = () => {
-	const { DropdownPropsBuilder } = useDropdownBuilder();
-	const { data: kimchiPeopleList } = useGetKimchies();
+	const { data: kimchiPeopleList, isSuccess } = useGetKimchies();
 
 	const kimchiList = useMemo(
 		() =>
-			kimchiPeopleList?.map((kimchi) => {
-				return DropdownPropsBuilder(kimchi)
-					.createId("id")
-					.createName("name")
-					.build();
-			}) ?? [],
-		[kimchiPeopleList]
+			isSuccess ? convertToDropdownList(kimchiPeopleList, "id", "name") : [],
+		[isSuccess, kimchiPeopleList]
 	);
 
 	return <Dropdown list={kimchiList} unqiue='kimchi' />;

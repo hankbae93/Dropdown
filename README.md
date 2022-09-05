@@ -231,3 +231,56 @@ const useDropdownBuilder = () => {
 
 export default useDropdownBuilder;
 ```
+
+# case 2
+
+구조가 생각보다 간단하여 패턴을 적용할 필요가 없다고 느껴서 함수로 줄였습니다. 생각보다 코드가 많이 줄어서 당황스럽긴 합니다.
+
+```ts
+interface DropProps<T> {
+	id: string | number;
+	name: string;
+	value: T;
+}
+
+/**
+ * @param data `Dropdown` 컴포넌트에 변환되어 들어갈 리스트
+ * @param keyId `Dropdown` 컴포넌트의 아이템 선택기준이 될 인자
+ * @param keyName `Dropdown` 컴포넌트의 아이템 텍스트가 될 인자
+ * @return `DropProps`타입 객체로 재구성한 객체 배열 리턴
+ */
+export default function convertToDropdownList<T extends Record<string, any>>(
+	data: T[],
+	keyId: keyof T,
+	keyName: keyof T
+): DropProps<T>[] {
+	return data.map((obj) => {
+		return {
+			id: obj[keyId],
+			name: obj[keyName],
+			value: obj,
+		};
+	});
+}
+```
+
+```ts
+import { useMemo } from "react";
+import Dropdown from "./components/Dropdown";
+import { useGetKimchies } from "./api";
+import convertToDropdownList from "./utils/convertToDropdownData";
+
+const Page = () => {
+	const { data: kimchiPeopleList, isSuccess } = useGetKimchies();
+
+	const kimchiList = useMemo(
+		() =>
+			isSuccess ? convertToDropdownList(kimchiPeopleList, "id", "name") : [],
+		[isSuccess, kimchiPeopleList]
+	);
+
+	return <Dropdown list={kimchiList} unqiue='kimchi' />;
+};
+
+export default Page;
+```
